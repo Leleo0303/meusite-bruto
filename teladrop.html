@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Plano Canadá — Home</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body class="page-home">
+    <header class="topbar centerbar">
+        <div class="logo-circle">CA</div>
+        <div class="hero-text">
+            <h1>Mudança para o Canadá</h1>
+            <p class="muted">Plano 2030 — grupo de 5 pessoas</p>
+        </div>
+    </header>
+
+    <main class="home-main">
+        <div class="menu-panel card elevated">
+            <div class="menu-row">
+                <div class="nav-item center">
+                    <button class="nav-btn large" data-dd="docs">Documentação ▾</button>
+                    <div class="dropdown" id="dd-docs">
+                        <a href="Docuemntos.html">Passaporte</a>
+                        <a href="Docuemntos.html">Antecedentes</a>
+                        <a href="Docuemntos.html">Work Permit</a>
+                    </div>
+                </div>
+
+                <div class="nav-item center">
+                    <button class="nav-btn large" data-dd="moradia">Moradia ▾</button>
+                    <div class="dropdown" id="dd-moradia">
+                        <a href="moradia.html">Região de Toronto</a>
+                        <a href="moradia.html">Região de Vancouver</a>
+                        <a href="moradia.html">Sites de aluguel</a>
+                    </div>
+                </div>
+
+                <div class="nav-item center">
+                    <button class="nav-btn large" data-dd="ti">TI & Salários ▾</button>
+                    <div class="dropdown" id="dd-ti">
+                        <a href="Ti&salario.html">Salários</a>
+                        <a href="Ti&salario.html">Simulação financeira</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="home-actions">
+                <button class="btn" id="openVisual">Alternar visual</button>
+                <a class="btn ghost" href="Docuemntos.html">Ir para Documentação</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal visual estilizado -->
+    <div id="modalVisual" class="modal" aria-hidden="true">
+        <div class="modal-card elevated">
+            <button class="modal-close" id="closeVisual" aria-label="Fechar">&times;</button>
+            <h2>Resumo visual — Mudança para o Canadá</h2>
+            <div class="map-grid">
+                <div class="map-block">
+                    <h3>Documentação</h3>
+                    <p>Passaporte, antecedentes, traduções, comprovante financeiro.</p>
+                </div>
+                <div class="map-block">
+                    <h3>Moradia</h3>
+                    <p>Mississauga, Brampton, Burnaby, Langley — casas 4–5 quartos.</p>
+                </div>
+                <div class="map-block">
+                    <h3>Visto</h3>
+                    <p>Work Permit — Job Offer, LMIA (se aplicável), exames e antecedentes.</p>
+                </div>
+                <div class="map-block">
+                    <h3>TI & Salários</h3>
+                    <p>Python, JS, Java, Cloud — faixas médias em CAD/ano.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="Docuemntos.html" class="btn">Ir para documentação</a>
+                <button class="btn ghost" id="closeVisual2">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="wewe.js"></script>
+</body>
+
+</html>

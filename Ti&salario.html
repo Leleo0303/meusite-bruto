@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TI & Salários — Mudança para o Canadá</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body class="page-ti">
+    <header class="topbar">
+        <div class="logo-circle small">CA</div>
+        <nav class="mini-nav">
+            <a href="order.html" class="link">Home</a>
+            <a href="Docuemntos.html" class="link">Documentação</a>
+            <a href="moradia.html" class="link">Moradia</a>
+        </nav>
+    </header>
+
+    <main class="content card elevated">
+        <h1>TI — Faixas salariais e simulação</h1>
+        <p class="muted">Valores aproximados em CAD por ano (médias gerais)</p>
+
+        <section id="salarios" class="doc-section">
+            <ul>
+                <li><strong>Python:</strong> CAD 85.000 – 120.000</li>
+                <li><strong>JavaScript / Node / React:</strong> CAD 70.000 – 110.000</li>
+                <li><strong>Java:</strong> CAD 80.000 – 125.000</li>
+                <li><strong>Cloud / DevOps:</strong> CAD 95.000 – 140.000</li>
+                <li><strong>Data Eng / Analysts:</strong> CAD 75.000 – 120.000</li>
+            </ul>
+            <div class="chart-wrap elevated">
+                <canvas id="salaryChart" aria-label="Gráfico de salários" role="img"></canvas>
+            </div>
+        </section>
+
+        <section id="simulacao" class="doc-section">
+            <h2>Simulação financeira rápida</h2>
+            <div class="sim-row">
+                <label>Taxa CAD → BRL (ex: 1 CAD = ) <input id="rate" type="number" value="3.10" step="0.01" /></label>
+                <button id="convertBtn" class="btn">Converter exemplo</button>
+            </div>
+            <div id="simResult" class="muted" style="margin-top:10px">Resultado aparecerá aqui.</div>
+        </section>
+
+        <div class="content-actions">
+            <a class="btn" href="order.html">Voltar</a>
+        </div>
+    </main>
+
+    <script src="wewe.js"></script>
+</body>
+
+</html>

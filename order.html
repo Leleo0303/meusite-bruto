@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mudança para o Canadá — Loading</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body class="page-loading">
+    <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite">
+        <div class="loading-card">
+            <div class="logo-big">CA</div>
+            <h1 class="loading-title">Mudança para o Canadá</h1>
+            <p class="loading-sub">Plano 2030 — preparando seu roteiro</p>
+
+            <div class="loader-ring" aria-hidden="true">
+                <svg viewBox="0 0 50 50" class="ring">
+                    <circle cx="25" cy="25" r="20" />
+                </svg>
+                <div class="loader-text">Carregando...</div>
+            </div>
+
+            <div style="margin-top:14px;display:flex;gap:8px">
+            </div>
+        </div>
+    </div>
+
+    <script src="wewe.js"></script>
+    <script>
+        // Redirect logic (keeps same behaviour)
+        const enter = document.getElementById('enterBtn');
+        const skip = document.getElementById('skipBtn');
+        let redirect = setTimeout(() => window.location.href = 'teladrop.html', 2500);
+        enter.addEventListener('click', () => { clearTimeout(redirect); window.location.href = 'order.html'; });
+        skip.addEventListener('click', () => { clearTimeout(redirect); window.location.href = 'order.html'; });
+    </script>
+</body>
+
+</html>
