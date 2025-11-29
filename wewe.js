@@ -1,4 +1,4 @@
-/* script.js — comportamento: dropdowns, modal, gráfico animado, conversor */
+// script.js — comportamento: dropdowns, modal, gráfico animado, conversor
 
 // DROPDOWNS
 document.querySelectorAll('[data-dd]').forEach(btn => {
