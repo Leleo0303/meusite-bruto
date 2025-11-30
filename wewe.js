@@ -17,7 +17,24 @@ const BASE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
 
 // Sua função getTimeline() (MANTIDA)
 async function getTimeline() {
-    // ... (manter o código da função getTimeline) ...
+    if (!JSONBIN_ID || !MASTER_KEY) {
+        console.error("Configuração do JSONBin.io ausente no wewe.js. Usando localStorage de fallback.");
+        // Fallback: se as chaves estiverem faltando, usa o localStorage (não colaborativo)
+        return JSON.parse(localStorage.getItem('timeline_v1') || '[]');
+    }
+    try {
+        const response = await fetch(BASE_URL + '/latest', {
+            headers: { 'X-Master-Key': MASTER_KEY }
+        });
+        if (!response.ok) throw new Error('Erro ao buscar metas: ' + response.statusText);
+        const data = await response.json();
+        // Retorna o array de registros
+        return data.record || [];
+    } catch (error) {
+        console.error("Falha ao carregar metas do JSONBin:", error);
+        // Em caso de falha na rede, retorna vazio
+        return [];
+    }
 }
 
 
