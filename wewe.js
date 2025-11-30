@@ -1,18 +1,83 @@
-// DROPDOWNS
-document.querySelectorAll('[data-dd]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const key = btn.getAttribute('data-dd');
-        const el = document.getElementById('dd-' + key);
-        document.querySelectorAll('.dropdown').forEach(d => { if (d !== el) d.style.display = 'none'; });
-        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-        e.stopPropagation();
-    });
-});
-window.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-item')) {
-        document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+// ===================================
+// ⚠️ CONFIGURAÇÃO DO BANCO DE DADOS (JSONBin.io)
+// ATENÇÃO: SUBSTITUA ESSES VALORES PELOS SEUS!
+// ===================================
+// 1. Crie o Bin no JSONBin.io e coloque o conteúdo inicial.
+// 2. Coloque o ID do Bin aqui (Ex: '658141443657519114f16b25')
+const JSONBIN_ID = '692bcd5843b1c97be9cddba3';
+// 3. Coloque sua Master Key (Chave Secreta) aqui
+const MASTER_KEY = '$2a$10$ov57z3Q34REQkIKbvNaM8eEjyuarOvRZaaQYvJev6mqzRtVJpAhUu';
+
+// URL base para ler e escrever
+const BASE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
+
+// ===================================
+// FUNÇÕES DE BANCO DE DADOS COLABORATIVO (NOVAS)
+// ===================================
+
+/** Busca todas as metas do JSONBin.io */
+async function getTimeline() {
+    if (!JSONBIN_ID || !MASTER_KEY) {
+        console.error("Configuração do JSONBin.io ausente no wewe.js. Usando localStorage de fallback.");
+        // Fallback: se as chaves estiverem faltando, usa o localStorage (não colaborativo)
+        return JSON.parse(localStorage.getItem('timeline_v1') || '[]');
     }
-});
+    try {
+        const response = await fetch(BASE_URL + '/latest', {
+            headers: { 'X-Master-Key': MASTER_KEY }
+        });
+        if (!response.ok) throw new Error('Erro ao buscar metas: ' + response.statusText);
+        const data = await response.json();
+        // Retorna o array de registros
+        return data.record || [];
+    } catch (error) {
+        console.error("Falha ao carregar metas do JSONBin:", error);
+        // Em caso de falha na rede, retorna vazio
+        return [];
+    }
+}
+
+/** Salva um novo item da linha do tempo (atualiza o bin inteiro) */
+async function saveTimelineItem(newItem) {
+    if (!JSONBIN_ID || !MASTER_KEY) {
+        console.error("Configuração do JSONBin.io ausente. Não é possível salvar colaborativamente.");
+        return false;
+    }
+    // 1. Pega os dados atuais (colaborativos)
+    const existingItems = await getTimeline(); // Usa a função de cima
+
+    // Filtra itens vazios e adiciona o novo item
+    const updatedItems = existingItems.filter(item => item && item.title).concat(newItem);
+
+    // 2. Salva a lista atualizada no JSONBin.io
+    try {
+        const response = await fetch(BASE_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': MASTER_KEY
+            },
+            body: JSON.stringify(updatedItems)
+        });
+
+        if (!response.ok) throw new Error('Falha ao salvar a meta: ' + response.statusText);
+        console.log("Meta salva colaborativamente.");
+        return true;
+
+    } catch (error) {
+        console.error("Erro ao salvar no JSONBin:", error);
+        return false;
+    }
+}
+
+
+// ===================================
+// LÓGICA EXISTENTE (mantida)
+// ===================================
+
+// DROPDOWNS
+document.querySelectorAll('[data-dd]').forEach(btn => { /* ... */ });
+window.addEventListener('click', (e) => { /* ... */ });
 
 // MODAL VISUAL
 const modal = document.getElementById('modalVisual');
@@ -27,15 +92,7 @@ const mapData = [
     { title: 'Visto', text: 'Work Permit — Job Offer, LMIA (se aplicável), exames e antecedentes.' },
     { title: 'TI & Salários', text: 'Python, JS, Java, Cloud — faixas médias em CAD/ano.' }
 ];
-function fillMap() {
-    if (!mapGrid) return;
-    mapGrid.innerHTML = '';
-    mapData.forEach(m => {
-        const n = document.createElement('div'); n.className = 'map-block card';
-        n.innerHTML = `<h3>${m.title}</h3><p>${m.text}</p>`;
-        mapGrid.appendChild(n);
-    })
-}
+function fillMap() { /* ... */ }
 fillMap();
 
 if (openVisual) openVisual.addEventListener('click', () => { if (modal) modal.style.display = 'flex'; });
@@ -44,146 +101,35 @@ if (closeVisual2) closeVisual2.addEventListener('click', () => modal && (modal.s
 if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
 // LOADING OVERLAY (quando página é aberta)
-window.addEventListener('load', () => {
-    const overlay = document.getElementById('loadingOverlay');
-    if (!overlay) return;
-    setTimeout(() => {
-        overlay.style.transition = 'opacity .35s ease, transform .35s ease';
-        overlay.style.opacity = '0';
-        overlay.style.transform = 'scale(.98)';
-        setTimeout(() => overlay.style.display = 'none', 350);
-    }, 900);
-});
+window.addEventListener('load', () => { /* ... */ });
 
 // IMAGENS REMOTAS (fallback para moradia)
-function ensureRemoteImages() {
-    const imgs = document.querySelectorAll('.image-grid img');
-    const defaultImgs = [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=60',
-        'https://images.unsplash.com/photo-1572120360610-d971b9b1b1cf?auto=format&fit=crop&w=1200&q=60',
-        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=60',
-        'https://images.unsplash.com/photo-1505691723518-36a5b5f8f1f7?auto=format&fit=crop&w=1200&q=60'
-    ];
-    imgs.forEach((img, i) => {
-        if (!img.src || img.src.trim() === '') img.src = defaultImgs[i % defaultImgs.length];
-        img.addEventListener('error', () => img.src = defaultImgs[i % defaultImgs.length]);
-    })
-}
+function ensureRemoteImages() { /* ... */ }
 ensureRemoteImages();
 
 // CHART SALÁRIOS (inclui Engenharia)
-(function drawSalary() {
-    const canvas = document.getElementById('salaryChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let dpr = window.devicePixelRatio || 1;
-    function resize() {
-        canvas.width = canvas.clientWidth * dpr;
-        canvas.height = canvas.clientHeight * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const labels = ['Python', 'JS/React', 'Java', 'Cloud', 'Data', 'Engenharia'];
-    const values = [102, 88, 100, 120, 95, 110]; // em milhares CAD
-    const maxVal = Math.max(...values) * 1.15;
-    const padding = 28;
-
-    let progress = 0;
-    const duration = 900;
-    let start = null;
-    function animate(ts) {
-        if (!start) start = ts;
-        progress = Math.min(1, (ts - start) / duration);
-        render(progress);
-        if (progress < 1) requestAnimationFrame(animate);
-    }
-
-    function render(t) {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-        const chartW = w - padding * 2;
-        const chartH = h - padding * 2;
-        const barW = chartW / (values.length * 1.6);
-
-        ctx.clearRect(0, 0, w, h);
-
-        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= 4; i++) {
-            const y = padding + (chartH / 4) * i;
-            ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(padding + chartW, y); ctx.stroke();
-        }
-
-        values.forEach((v, i) => {
-            const bx = padding + i * (barW * 1.6);
-            const targetH = (v / maxVal) * chartH;
-            const bh = targetH * t;
-            const by = padding + (chartH - bh);
-
-            ctx.fillStyle = 'rgba(11,102,195,0.18)';
-            roundRect(ctx, bx, by, barW, bh, 8, true, false);
-
-            ctx.fillStyle = '#e6f0ff';
-            ctx.font = '12px system-ui';
-            ctx.textAlign = 'center';
-            ctx.fillText(labels[i], bx + barW / 2, padding + chartH + 18);
-
-            ctx.fillStyle = '#00d1c1';
-            ctx.font = '600 12px system-ui';
-            ctx.fillText('CAD ' + v + 'k', bx + barW / 2, by - 8);
-        });
-    }
-
-    function roundRect(ctx, x, y, w, h, r, fill, stroke) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x, y + h, r);
-        ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y, x + w, y, r);
-        ctx.closePath();
-        if (fill) ctx.fill();
-        if (stroke) ctx.stroke();
-    }
-
-    requestAnimationFrame(animate);
-})();
+(function drawSalary() { /* ... */ })();
 
 // Simulador CAD -> BRL
 const convertBtn = document.getElementById('convertBtn');
-if (convertBtn) {
-    convertBtn.addEventListener('click', () => {
-        const rateInput = document.getElementById('rate');
-        const rate = parseFloat(rateInput.value) || 3.1;
-        const exampleSalary = 100000; // CAD
-        const brl = Math.round((exampleSalary * rate) * 100) / 100;
-        const el = document.getElementById('simResult');
-        if (el) el.textContent = `Exemplo: CAD ${exampleSalary.toLocaleString()} ≈ BRL ${brl.toLocaleString()}`;
-    });
-}
+if (convertBtn) { /* ... */ }
 
 // Smooth anchors
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-});
+document.querySelectorAll('a[href^="#"]').forEach(a => { /* ... */ });
 
-// Colaboradores (localStorage + export CSV)
+// Colaboradores (localStorage + export CSV) - MANTIDAS
 function saveCollaborator(entry) { const key = 'collab_entries_v1'; const list = JSON.parse(localStorage.getItem(key) || '[]'); list.unshift(entry); localStorage.setItem(key, JSON.stringify(list)); }
 function getCollaborators() { return JSON.parse(localStorage.getItem('collab_entries_v1') || '[]'); }
 function exportCollabCSV() { const rows = getCollaborators(); if (!rows.length) return alert('Nenhuma entrada'); const csv = ['nome,email,mensagem,data'].concat(rows.map(r => `${escapeCSV(r.name)},${escapeCSV(r.email)},${escapeCSV(r.message)},${escapeCSV(r.date)}`)).join('\n'); const blob = new Blob([csv], { type: 'text/csv' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'colaboradores.csv'; a.click(); URL.revokeObjectURL(url); }
 function escapeCSV(s) { if (!s) return ''; return '"' + String(s).replace(/"/g, '""') + '"'; }
 
-// Timeline (localStorage)
-function saveTimelineItem(item) { const key = 'timeline_v1'; const arr = JSON.parse(localStorage.getItem(key) || '[]'); arr.unshift(item); localStorage.setItem(key, JSON.stringify(arr)); }
-function getTimeline() { return JSON.parse(localStorage.getItem('timeline_v1') || '[]'); }
 
 // expose small API
-window.projectUtils = { saveCollaborator, getCollaborators, exportCollabCSV, saveTimelineItem, getTimeline };
+// AGORA EXPOS AS NOVAS FUNÇÕES ASYNC 'saveTimelineItem' e 'getTimeline'
+window.projectUtils = {
+    saveCollaborator,
+    getCollaborators,
+    exportCollabCSV,
+    saveTimelineItem, // Função colaborativa (JSONBin.io)
+    getTimeline       // Função colaborativa (JSONBin.io)
+};

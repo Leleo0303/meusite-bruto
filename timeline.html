@@ -34,10 +34,60 @@
 
     <script src="wewe.js"></script>
     <script>
-        const form = document.getElementById('tlForm'); const list = document.getElementById('timelineList');
-        function renderTimeline() { const items = projectUtils.getTimeline(); if (!items.length) list.innerHTML = '<p class="muted">Nenhum marco ainda</p>'; else list.innerHTML = items.map(i => `<div class="timeline-item"><strong>${i.title}</strong> <small class="muted">${i.year} • ${i.date}</small></div>`).join(''); }
+        const form = document.getElementById('tlForm');
+        const list = document.getElementById('timelineList');
+
+        // Função atualizada para usar a busca assíncrona
+        async function renderTimeline() {
+            list.innerHTML = '<p class="muted">Carregando metas colaborativas...</p>';
+
+            // Agora a busca espera pelos dados do JSONBin.io
+            const items = await projectUtils.getTimeline();
+
+            // Ordena os itens (opcional, mas bom para a timeline)
+            items.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1);
+
+            if (!items.length) {
+                list.innerHTML = '<p class="muted">Nenhuma meta ainda. Seja o primeiro a adicionar!</p>';
+            } else {
+                list.innerHTML = items.map(i => {
+                    const addedBy = i.amigo ? `por ${i.amigo}` : 'por você';
+                    return `<div class="timeline-item">
+                                <strong>${i.title}</strong> 
+                                <small class="muted">${i.year} • ${addedBy} • ${i.date.substring(0, 10)}</small>
+                            </div>`
+                }).join('');
+            }
+        }
+
+        // Renderiza a timeline ao carregar a página
         renderTimeline();
-        form.addEventListener('submit', e => { e.preventDefault(); const year = document.getElementById('year').value; const title = document.getElementById('title').value; const obj = { year, title, date: new Date().toLocaleString() }; projectUtils.saveTimelineItem(obj); renderTimeline(); form.reset(); });
+
+        // Lógica de Submissão
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            // Pega os valores do formulário
+            const year = document.getElementById('year').value;
+            const title = document.getElementById('title').value;
+            const amigo = document.getElementById('amigo').value || 'Anônimo';
+
+            const obj = {
+                year,
+                title,
+                date: new Date().toLocaleString(),
+                amigo // Adiciona o campo do amigo
+            };
+
+            const status = await projectUtils.saveTimelineItem(obj);
+
+            if (status) {
+                renderTimeline();
+                document.getElementById('title').value = ''; // Limpa só o título
+            } else {
+                alert("Erro ao salvar a meta colaborativa. Verifique as chaves no wewe.js.");
+            }
+        });
     </script>
 </body>
 
