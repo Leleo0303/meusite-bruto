@@ -42,25 +42,38 @@
         const form = document.getElementById('tlForm');
         const list = document.getElementById('timelineList');
 
-        // Função atualizada para usar a busca assíncrona
+        // Função que renderiza a lista de metas
         async function renderTimeline() {
             list.innerHTML = '<p class="muted">Carregando metas colaborativas...</p>';
 
-            // Agora a busca espera pelos dados do JSONBin.io
+            // 1. Busca os dados atualizados (JSONBin.io)
             const items = await projectUtils.getTimeline();
 
-            // Ordena os itens (opcional, mas bom para a timeline)
+            // 2. Ordena os itens (opcional, mas bom para a timeline)
             items.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1);
 
             if (!items.length) {
                 list.innerHTML = '<p class="muted">Nenhuma meta ainda. Seja o primeiro a adicionar!</p>';
             } else {
-                list.innerHTML = items.map(i => {
+                // 3. Renderiza a lista incluindo os botões de ação
+                list.innerHTML = items.map((i, index) => { // <--- Usamos o 'index' aqui para os botões
                     const addedBy = i.amigo ? `por ${i.amigo}` : 'por você';
-                    return `<div class="timeline-item">
-                                <strong>${i.title}</strong> 
-                                <small class="muted">${i.year} • ${addedBy} • ${i.date.substring(0, 10)}</small>
-                            </div>`
+
+                    return `
+                <div class="timeline-item">
+                    <div class="timeline-meta">
+                        <strong>${i.title}</strong> 
+                        <small class="muted">${i.year} • ${addedBy} • ${i.date.substring(0, 10)}</small>
+                    </div>
+                    <div class="timeline-actions">
+                        <button class="btn-small btn-del" onclick="deleteTimelineItem(${index})">
+                            Excluir
+                        </button>
+                        <button class="btn-small btn-edit" onclick="editTimelineItem(${index})">
+                            Editar
+                        </button>
+                    </div>
+                </div>`;
                 }).join('');
             }
         }
@@ -68,11 +81,10 @@
         // Renderiza a timeline ao carregar a página
         renderTimeline();
 
-        // Lógica de Submissão
+        // Lógica de Submissão (Adicionar Nova Meta)
         form.addEventListener('submit', async e => {
             e.preventDefault();
 
-            // Pega os valores do formulário
             const year = document.getElementById('year').value;
             const title = document.getElementById('title').value;
             const amigo = document.getElementById('amigo').value || 'Anônimo';
@@ -81,18 +93,76 @@
                 year,
                 title,
                 date: new Date().toLocaleString(),
-                amigo // Adiciona o campo do amigo
+                amigo
             };
 
             const status = await projectUtils.saveTimelineItem(obj);
 
             if (status) {
                 renderTimeline();
-                document.getElementById('title').value = ''; // Limpa só o título
+                document.getElementById('title').value = '';
             } else {
                 alert("Erro ao salvar a meta colaborativa. Verifique as chaves no wewe.js.");
             }
         });
+
+        // ===================================
+        // NOVAS FUNÇÕES DE AÇÃO (Excluir/Editar)
+        // ===================================
+
+        // Função de Exclusão
+        async function deleteTimelineItem(indexToDelete) {
+            if (!confirm("Tem certeza que deseja excluir esta meta?")) return;
+
+            list.innerHTML = '<p class="muted">Excluindo...</p>';
+
+            const allItems = await projectUtils.getTimeline();
+
+            // Remove o item do array usando o index
+            const updatedItems = allItems.filter((_, index) => index !== indexToDelete);
+
+            // Salva o novo array no JSONBin.io (usando a nova função que vamos criar no wewe.js)
+            const status = await projectUtils.updateFullTimeline(updatedItems);
+
+            if (status) {
+                renderTimeline();
+            } else {
+                alert("Falha ao excluir a meta.");
+            }
+        }
+
+
+        // Função de Edição
+        async function editTimelineItem(indexToEdit) {
+            const allItems = await projectUtils.getTimeline();
+            const item = allItems[indexToEdit];
+
+            if (!item) return;
+
+            // Pede ao usuário para inserir o novo título
+            const newTitle = prompt(`Editando meta de ${item.year}:`, item.title);
+
+            if (newTitle && newTitle.trim() !== "") {
+                list.innerHTML = '<p class="muted">Atualizando...</p>';
+
+                // Atualiza o item no array
+                allItems[indexToEdit].title = newTitle;
+                allItems[indexToEdit].date = new Date().toLocaleString(); // Atualiza a data
+
+                // Salva o array atualizado no JSONBin.io
+                const status = await projectUtils.updateFullTimeline(allItems);
+
+                if (status) {
+                    renderTimeline();
+                } else {
+                    alert("Falha ao editar a meta.");
+                }
+            }
+        }
+
+        // Expõe as funções para serem acessadas pelo onclick no HTML
+        window.deleteTimelineItem = deleteTimelineItem;
+        window.editTimelineItem = editTimelineItem;
     </script>
 </body>
 

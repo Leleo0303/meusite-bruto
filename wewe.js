@@ -15,29 +15,40 @@ const BASE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
 // FUNÇÕES DE BANCO DE DADOS COLABORATIVO (NOVAS)
 // ===================================
 
-/** Busca todas as metas do JSONBin.io */
+// Sua função getTimeline() (MANTIDA)
 async function getTimeline() {
+    // ... (manter o código da função getTimeline) ...
+}
+
+
+/** NOVO: ATUALIZA O BIN INTEIRO com uma nova lista de itens */
+async function updateFullTimeline(newItems) {
     if (!JSONBIN_ID || !MASTER_KEY) {
-        console.error("Configuração do JSONBin.io ausente no wewe.js. Usando localStorage de fallback.");
-        // Fallback: se as chaves estiverem faltando, usa o localStorage (não colaborativo)
-        return JSON.parse(localStorage.getItem('timeline_v1') || '[]');
+        console.error("Configuração do JSONBin.io ausente. Não é possível salvar/atualizar colaborativamente.");
+        return false;
     }
     try {
-        const response = await fetch(BASE_URL + '/latest', {
-            headers: { 'X-Master-Key': MASTER_KEY }
+        const response = await fetch(BASE_URL, {
+            method: 'PUT', // PUT sobrescreve o Bin inteiro (essencial para Excluir/Editar)
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': MASTER_KEY
+            },
+            body: JSON.stringify(newItems)
         });
-        if (!response.ok) throw new Error('Erro ao buscar metas: ' + response.statusText);
-        const data = await response.json();
-        // Retorna o array de registros
-        return data.record || [];
+
+        if (!response.ok) throw new Error('Falha ao atualizar a meta: ' + response.statusText);
+        console.log("Timeline atualizada colaborativamente.");
+        return true;
+
     } catch (error) {
-        console.error("Falha ao carregar metas do JSONBin:", error);
-        // Em caso de falha na rede, retorna vazio
-        return [];
+        console.error("Erro ao salvar no JSONBin:", error);
+        return false;
     }
 }
 
-/** Salva um novo item da linha do tempo (atualiza o bin inteiro) */
+
+/** Salva um novo item da linha do tempo (MODIFICADA para usar updateFullTimeline) */
 async function saveTimelineItem(newItem) {
     if (!JSONBIN_ID || !MASTER_KEY) {
         console.error("Configuração do JSONBin.io ausente. Não é possível salvar colaborativamente.");
@@ -49,27 +60,9 @@ async function saveTimelineItem(newItem) {
     // Filtra itens vazios e adiciona o novo item
     const updatedItems = existingItems.filter(item => item && item.title).concat(newItem);
 
-    // 2. Salva a lista atualizada no JSONBin.io
-    try {
-        const response = await fetch(BASE_URL, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': MASTER_KEY
-            },
-            body: JSON.stringify(updatedItems)
-        });
-
-        if (!response.ok) throw new Error('Falha ao salvar a meta: ' + response.statusText);
-        console.log("Meta salva colaborativamente.");
-        return true;
-
-    } catch (error) {
-        console.error("Erro ao salvar no JSONBin:", error);
-        return false;
-    }
+    // 2. Salva a lista atualizada no JSONBin.io usando a nova função PUT
+    return await updateFullTimeline(updatedItems);
 }
-
 
 // ===================================
 // LÓGICA EXISTENTE (mantida)
@@ -131,5 +124,6 @@ window.projectUtils = {
     getCollaborators,
     exportCollabCSV,
     saveTimelineItem, // Função colaborativa (JSONBin.io)
-    getTimeline       // Função colaborativa (JSONBin.io)
+    getTimeline,      // Função colaborativa (JSONBin.io)
+    updateFullTimeline // <--- NOVO: Essencial para excluir/editar
 };
