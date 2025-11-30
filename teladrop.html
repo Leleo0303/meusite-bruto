@@ -17,7 +17,7 @@
         </div>
     </header>
 
-    <main class="home-main">
+    <main class="home-main container">
         <div class="menu-panel card elevated">
             <div class="menu-row">
                 <div class="nav-item center">
@@ -50,32 +50,19 @@
             <div class="home-actions">
                 <button class="btn" id="openVisual">Alternar visual</button>
                 <a class="btn ghost" href="documentos.html">Ir para Documentação</a>
+                <a class="btn" href="colaboradores.html">Adicionar metas (amigos)</a>
+                <a class="btn ghost" href="timeline.html">Linha do tempo</a>
             </div>
         </div>
     </main>
 
-    <!-- Modal visual estilizado -->
+    <!-- Modal visual -->
     <div id="modalVisual" class="modal" aria-hidden="true">
         <div class="modal-card elevated">
             <button class="modal-close" id="closeVisual" aria-label="Fechar">&times;</button>
             <h2>Resumo visual — Mudança para o Canadá</h2>
-            <div class="map-grid">
-                <div class="map-block">
-                    <h3>Documentação</h3>
-                    <p>Passaporte, antecedentes, traduções, comprovante financeiro.</p>
-                </div>
-                <div class="map-block">
-                    <h3>Moradia</h3>
-                    <p>Mississauga, Brampton, Burnaby, Langley — casas 4–5 quartos.</p>
-                </div>
-                <div class="map-block">
-                    <h3>Visto</h3>
-                    <p>Work Permit — Job Offer, LMIA (se aplicável), exames e antecedentes.</p>
-                </div>
-                <div class="map-block">
-                    <h3>TI & Salários</h3>
-                    <p>Python, JS, Java, Cloud — faixas médias em CAD/ano.</p>
-                </div>
+            <div class="map-grid" id="mapGrid">
+                <!-- preenchido por webe.js -->
             </div>
             <div class="modal-footer">
                 <a href="documentos.html" class="btn">Ir para documentação</a>

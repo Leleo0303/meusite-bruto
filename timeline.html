@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Linha do Tempo — 2026–2030</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="logo-circle small">CA</div>
+        <nav class="mini-nav"><a href="index.html" class="link">Home</a></nav>
+    </header>
+    <main class="content card elevated">
+        <h1>Linha do Tempo — 2026 a 2030</h1>
+        <p class="muted">Adicione marcos por ano. Salvamos no navegador.</p>
+        <form id="tlForm" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select id="year" required>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+                <option>2030</option>
+            </select>
+            <input id="title" placeholder="Título do marco" required
+                style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+            <button class="btn" type="submit">Adicionar</button>
+        </form>
+
+        <div id="timelineList" style="margin-top:12px"></div>
+    </main>
+
+    <script src="wewe.js"></script>
+    <script>
+        const form = document.getElementById('tlForm'); const list = document.getElementById('timelineList');
+        function renderTimeline() { const items = projectUtils.getTimeline(); if (!items.length) list.innerHTML = '<p class="muted">Nenhum marco ainda</p>'; else list.innerHTML = items.map(i => `<div class="timeline-item"><strong>${i.title}</strong> <small class="muted">${i.year} • ${i.date}</small></div>`).join(''); }
+        renderTimeline();
+        form.addEventListener('submit', e => { e.preventDefault(); const year = document.getElementById('year').value; const title = document.getElementById('title').value; const obj = { year, title, date: new Date().toLocaleString() }; projectUtils.saveTimelineItem(obj); renderTimeline(); form.reset(); });
+    </script>
+</body>
+
+</html>

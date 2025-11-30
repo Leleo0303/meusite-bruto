@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Colaboradores — Adicionar metas</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="logo-circle small">CA</div>
+        <nav class="mini-nav"><a href="index.html" class="link">Home</a></nav>
+    </header>
+
+    <main class="content card elevated">
+        <h1>Adicionar metas e observações</h1>
+        <p class="muted">Seus amigos podem enviar ideias, metas e lembretes. As entradas ficam no navegador
+            (localStorage).</p>
+
+        <form id="collabForm">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <input id="name" placeholder="Seu nome" required
+                    style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+                <input id="email" placeholder="Email (opcional)"
+                    style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+            </div>
+            <textarea id="message" placeholder="Meta / Observação" required
+                style="width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+                <button class="btn" type="submit">Enviar</button>
+                <button id="exportCSV" class="btn ghost" type="button">Exportar CSV</button>
+            </div>
+        </form>
+
+        <h3 style="margin-top:12px">Entradas recentes</h3>
+        <div id="entries"></div>
+    </main>
+
+    <script src="wewe.js"></script>
+    <script>
+        // Render e comportamento específico da página
+        const form = document.getElementById('collabForm'); const entriesEl = document.getElementById('entries');
+        function renderEntries() { const items = projectUtils.getCollaborators(); entriesEl.innerHTML = items.length ? items.map(i => `<div class="timeline-item"><strong>${i.name}</strong> <small class="muted">${i.date}</small><p>${i.message}</p></div>`).join('') : '<p class="muted">Nenhuma entrada ainda</p>'; }
+        renderEntries();
+        form.addEventListener('submit', e => { e.preventDefault(); const name = document.getElementById('name').value || 'Anônimo'; const email = document.getElementById('email').value || ''; const msg = document.getElementById('message').value || ''; const obj = { name: name, email: email, message: msg, date: new Date().toLocaleString() }; projectUtils.saveCollaborator(obj); renderEntries(); form.reset(); alert('Enviado!') });
+        document.getElementById('exportCSV').addEventListener('click', () => projectUtils.exportCollabCSV());
+    </script>
+</body>
+
+</html>
