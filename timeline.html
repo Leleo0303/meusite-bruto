@@ -17,6 +17,9 @@
         <h1>Linha do Tempo — 2026 a 2030</h1>
         <p class="muted">Adicione marcos por ano. Salvamos no navegador.</p>
         <form id="tlForm" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input id="amigo" placeholder="Seu Nome" required
+                style="flex-basis:120px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+
             <select id="year" required>
                 <option>2026</option>
                 <option>2027</option>
@@ -24,8 +27,10 @@
                 <option>2029</option>
                 <option>2030</option>
             </select>
+
             <input id="title" placeholder="Título do marco" required
                 style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+
             <button class="btn" type="submit">Adicionar</button>
         </form>
 
