@@ -4,7 +4,7 @@
 // ===================================
 // 1. Crie o Bin no JSONBin.io e coloque o conteúdo inicial.
 // 2. Coloque o ID do Bin aqui (Ex: '658141443657519114f16b25')
-const JSONBIN_ID = '692bcd5843b1c97be9cddba3';
+const JSONBIN_ID = '692bd93843b1c97be9cdec79';
 // 3. Coloque sua Master Key (Chave Secreta) aqui
 const MASTER_KEY = '$2a$10$ov57z3Q34REQkIKbvNaM8eEjyuarOvRZaaQYvJev6mqzRtVJpAhUu';
 
