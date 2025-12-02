@@ -4,20 +4,23 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Mudança para o Canadá</title>
+    <title>Carregando... Mudança para o Canadá</title>
     <link rel="stylesheet" href="ee.css">
 </head>
 
 <body class="page-loading">
+
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-card">
+        <div class="loading-card" style="max-width: 400px; width: 90%;">
+
             <div class="logo-wrap">
                 <img src="icon/iconCAD.jpg" alt="CA" onerror="this.style.display='none';this.parentNode.innerText='CA'">
             </div>
+
             <h1 class="loading-title">Plano Canadá 2030</h1>
 
-            <p id="loadingTip" class="loading-sub" style="font-style:italic; max-width:300px">
-                Preparando roteiro...
+            <p id="loadingTip" class="loading-sub" style="font-style:italic; min-height: 40px;">
+                Iniciando sistemas...
             </p>
 
             <div class="loader-ring">
@@ -25,12 +28,45 @@
                     <circle cx="25" cy="25" r="20" />
                 </svg>
             </div>
+
+            <div class="progress-container">
+                <div id="progBar" class="progress-bar-fill"></div>
+            </div>
+            <p class="progress-text" id="progText">0%</p>
+
         </div>
     </div>
+
     <script>
-        // Redirecionamento automático
-        setTimeout(() => window.location.href = 'teladrop.html', 4000);
+        // --- Configuração do Tempo ---
+        const tempoTotal = 5000; // Tempo total em milissegundos (7 segundos)
+        const intervaloAtualizacao = 50; // Atualiza a barra a cada 50ms (para ficar suave)
+
+        let tempoDecorrido = 0;
+        const barra = document.getElementById('progBar');
+        const texto = document.getElementById('progText');
+
+        // Inicia o intervalo que vai simular o carregamento
+        const simuladorLoading = setInterval(() => {
+            tempoDecorrido += intervaloAtualizacao;
+
+            // Calcula a porcentagem atual (máximo 100)
+            let porcentagem = Math.min((tempoDecorrido / tempoTotal) * 100, 100);
+
+            // Atualiza a largura da barra e o texto
+            barra.style.width = porcentagem + '%';
+            texto.innerText = Math.floor(porcentagem) + '%';
+
+            // Verifica se o tempo acabou
+            if (tempoDecorrido >= tempoTotal) {
+                clearInterval(simuladorLoading); // Para o simulador
+                // Redireciona para a página principal
+                window.location.href = 'teladrop.html';
+            }
+
+        }, intervaloAtualizacao);
     </script>
+
     <script src="wewe.js"></script>
 </body>
 
