@@ -1,169 +1,61 @@
-<!doctype html>
-<html lang="pt-BR">
+<script src="wewe.js"></script>
+<script>
+    const form = document.getElementById('tlForm');
+    const list = document.getElementById('timelineList');
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Linha do Tempo — 2026–2030</title>
-    <link rel="stylesheet" href="ee.css">
-</head>
+    async function renderTimeline() {
+        list.innerHTML = '<p class="muted">Carregando...</p>';
+        const items = await projectUtils.getTimeline();
 
-<body>
-    <header class="topbar">
-        <div class="logo-circle small">CA</div>
-        <nav class="mini-nav"><a href="index.html" class="link">Home</a></nav>
-    </header>
-    <main class="content card elevated">
-        <h1>Linha do Tempo — 2026 a 2030</h1>
-        <p class="muted">Adicione marcos por ano. Salvamos no navegador.</p>
-        <form id="tlForm" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <input id="amigo" placeholder="Seu Nome" required
-                style="flex-basis:120px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+        // Ordenar por ano
+        items.sort((a, b) => parseInt(a.year) - parseInt(b.year));
 
-            <select id="year" required>
-                <option>2026</option>
-                <option>2027</option>
-                <option>2028</option>
-                <option>2029</option>
-                <option>2030</option>
-            </select>
+        if (!items.length) {
+            list.innerHTML = '<p class="muted">Nenhuma meta. Adicione uma!</p>';
+            return;
+        }
 
-            <input id="title" placeholder="Título do marco" required
-                style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
-
-            <button class="btn" type="submit">Adicionar</button>
-        </form>
-
-        <div id="timelineList" style="margin-top:12px"></div>
-    </main>
-
-    <script src="wewe.js"></script>
-    <script>
-        const form = document.getElementById('tlForm');
-        const list = document.getElementById('timelineList');
-
-        // Função que renderiza a lista de metas
-        async function renderTimeline() {
-            list.innerHTML = '<p class="muted">Carregando metas colaborativas...</p>';
-
-            // 1. Busca os dados atualizados (JSONBin.io)
-            const items = await projectUtils.getTimeline();
-
-            // 2. Ordena os itens (opcional, mas bom para a timeline)
-            items.sort((a, b) => (parseInt(a.year) > parseInt(b.year)) ? 1 : -1);
-
-            if (!items.length) {
-                list.innerHTML = '<p class="muted">Nenhuma meta ainda. Seja o primeiro a adicionar!</p>';
-            } else {
-                // 3. Renderiza a lista incluindo os botões de ação
-                list.innerHTML = items.map((i, index) => { // <--- Usamos o 'index' aqui para os botões
-                    const addedBy = i.amigo ? `por ${i.amigo}` : 'por você';
-
-                    return `
+        list.innerHTML = items.map((i, idx) => `
                 <div class="timeline-item">
                     <div class="timeline-meta">
-                        <strong>${i.title}</strong> 
-                        <small class="muted">${i.year} • ${addedBy} • ${i.date.substring(0, 10)}</small>
+                        <strong>${i.year} - ${i.title}</strong>
+                        <div class="muted" style="font-size:12px">Por: ${i.amigo || 'Eu'} em ${i.date ? i.date.substring(0, 10) : '-'}</div>
                     </div>
                     <div class="timeline-actions">
-                        <button class="btn-small btn-del" onclick="deleteTimelineItem(${index})">
-                            Excluir
-                        </button>
-                        <button class="btn-small btn-edit" onclick="editTimelineItem(${index})">
-                            Editar
-                        </button>
+                        <button class="btn-small btn-del" onclick="deleteItem(${idx})">X</button>
                     </div>
-                </div>`;
-                }).join('');
-            }
-        }
+                </div>
+            `).join('');
+    }
 
-        // Renderiza a timeline ao carregar a página
+    renderTimeline();
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const year = document.getElementById('year').value;
+        const title = document.getElementById('title').value;
+        const amigo = document.getElementById('amigo').value;
+
+        const btn = form.querySelector('button');
+        btn.innerText = 'Salvando...';
+
+        await projectUtils.saveTimelineItem({ year, title, amigo, date: new Date().toLocaleString() });
+
+        btn.innerText = 'Adicionar';
+        form.reset();
         renderTimeline();
+    });
 
-        // Lógica de Submissão (Adicionar Nova Meta)
-        form.addEventListener('submit', async e => {
-            e.preventDefault();
-
-            const year = document.getElementById('year').value;
-            const title = document.getElementById('title').value;
-            const amigo = document.getElementById('amigo').value || 'Anônimo';
-
-            const obj = {
-                year,
-                title,
-                date: new Date().toLocaleString(),
-                amigo
-            };
-
-            const status = await projectUtils.saveTimelineItem(obj);
-
-            if (status) {
-                renderTimeline();
-                document.getElementById('title').value = '';
-            } else {
-                alert("Erro ao salvar a meta colaborativa. Verifique as chaves no wewe.js.");
-            }
-        });
-
-        // ===================================
-        // NOVAS FUNÇÕES DE AÇÃO (Excluir/Editar)
-        // ===================================
-
-        // Função de Exclusão
-        async function deleteTimelineItem(indexToDelete) {
-            if (!confirm("Tem certeza que deseja excluir esta meta?")) return;
-
-            list.innerHTML = '<p class="muted">Excluindo...</p>';
-
-            const allItems = await projectUtils.getTimeline();
-
-            // Remove o item do array usando o index
-            const updatedItems = allItems.filter((_, index) => index !== indexToDelete);
-
-            // Salva o novo array no JSONBin.io (usando a nova função que vamos criar no wewe.js)
-            const status = await projectUtils.updateFullTimeline(updatedItems);
-
-            if (status) {
-                renderTimeline();
-            } else {
-                alert("Falha ao excluir a meta.");
-            }
-        }
-
-
-        // Função de Edição
-        async function editTimelineItem(indexToEdit) {
-            const allItems = await projectUtils.getTimeline();
-            const item = allItems[indexToEdit];
-
-            if (!item) return;
-
-            // Pede ao usuário para inserir o novo título
-            const newTitle = prompt(`Editando meta de ${item.year}:`, item.title);
-
-            if (newTitle && newTitle.trim() !== "") {
-                list.innerHTML = '<p class="muted">Atualizando...</p>';
-
-                // Atualiza o item no array
-                allItems[indexToEdit].title = newTitle;
-                allItems[indexToEdit].date = new Date().toLocaleString(); // Atualiza a data
-
-                // Salva o array atualizado no JSONBin.io
-                const status = await projectUtils.updateFullTimeline(allItems);
-
-                if (status) {
-                    renderTimeline();
-                } else {
-                    alert("Falha ao editar a meta.");
-                }
-            }
-        }
-
-        // Expõe as funções para serem acessadas pelo onclick no HTML
-        window.deleteTimelineItem = deleteTimelineItem;
-        window.editTimelineItem = editTimelineItem;
-    </script>
+    // Função global para o botão delete funcionar
+    window.deleteItem = async (index) => {
+        if (!confirm('Excluir?')) return;
+        const items = await projectUtils.getTimeline();
+        items.splice(index, 1); // Remove pelo índice
+        list.innerHTML = '<p class="muted">Atualizando...</p>';
+        await projectUtils.updateFullTimeline(items);
+        renderTimeline();
+    }
+</script>
 </body>
 
 </html>
