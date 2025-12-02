@@ -4,62 +4,62 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Documentação — Mudança para o Canadá</title>
+    <title>Checklist Documentos</title>
     <link rel="stylesheet" href="ee.css">
 </head>
 
-<body class="page-docs">
+<body>
     <header class="topbar">
         <div class="logo-circle small">CA</div>
-        <nav class="mini-nav">
-            <a href="index.html" class="link">Home</a>
-            <a href="moradia.html" class="link">Moradia</a>
-            <a href="Ti&salario.html" class="link">TI & Salários</a>
-        </nav>
+        <nav class="mini-nav"><a href="index.html" class="link">Voltar</a></nav>
     </header>
 
     <main class="content card elevated">
-        <h1>Documentação</h1>
-        <p class="muted">Documentos e links úteis para passaporte e antecedentes.</p>
+        <h1>Checklist de Documentação</h1>
+        <p class="muted">Marque o que já foi providenciado. O status é salvo automaticamente.</p>
 
-        <section id="passaporte" class="doc-section">
-            <h2>Passaporte (Brasil)</h2>
-            <ul>
-                <li>RG ou CNH</li>
-                <li>CPF</li>
-                <li>Título de eleitor + comprovante</li>
-                <li>Quitação militar (homens)</li>
-                <li>Pagamento da GRU</li>
-            </ul>
-            <p><a href="https://www.gov.br/pf/pt-br/assuntos/passaporte" target="_blank" rel="noopener"
-                    class="link">Site Polícia Federal — Passaporte</a></p>
+        <section class="doc-section">
+            <h2>Fase 1: Preparação Brasil</h2>
+
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="passaporte">
+                <span class="chk-label">Tirar Passaporte (Validade 10 anos)</span>
+            </label>
+
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="ingles">
+                <span class="chk-label">Estudar Inglês (Foco no IELTS/CELPIP)</span>
+            </label>
+
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="reserva">
+                <span class="chk-label">Juntar Reserva Financeira (Proof of Funds)</span>
+            </label>
         </section>
 
-        <section id="antecedentes" class="doc-section">
-            <h2>Antecedentes criminais</h2>
-            <p>Solicite via sistema da PF e guarde o comprovante para o visto.</p>
-            <p><a href="https://servicos.dpf.gov.br/antecedentes-criminais/" target="_blank" rel="noopener"
-                    class="link">Solicitar antecedentes — PF</a></p>
-        </section>
+        <section class="doc-section">
+            <h2>Fase 2: Aplicação</h2>
 
-        <section id="vistos" class="doc-section">
-            <h2>Visto — Work Permit</h2>
-            <ul>
-                <li>Job Offer</li>
-                <li>LMIA (se exigido)</li>
-                <li>Exames médicos (se necessário)</li>
-                <li>Traduções juramentadas (quando pedirem)</li>
-            </ul>
-            <p><a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/work-canada.html"
-                    target="_blank" rel="noopener" class="link">IRCC — trabalhar no Canadá</a></p>
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="eca">
+                <span class="chk-label">Validar Diploma (ECA - WES)</span>
+            </label>
+
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="ielts">
+                <span class="chk-label">Realizar prova IELTS General</span>
+            </label>
+
+            <label class="chk-wrapper">
+                <input type="checkbox" class="chk-doc" data-id="antecedentes">
+                <span class="chk-label">Emitir Antecedentes Criminais (PF)</span>
+            </label>
         </section>
 
         <div class="content-actions">
-            <a class="btn" href="index.html">Voltar ao Menu</a>
-            <a class="btn ghost" href="moradia.html">Ir para Moradia</a>
+            <a href="crs.html" class="btn">Simular meus Pontos Agora &rarr;</a>
         </div>
     </main>
-
     <script src="wewe.js"></script>
 </body>
 

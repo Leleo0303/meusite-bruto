@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Plano Canadá — Home</title>
+    <title>Dashboard — Plano Canadá</title>
     <link rel="stylesheet" href="ee.css">
 </head>
 
@@ -12,65 +12,62 @@
     <header class="topbar centerbar">
         <div class="logo-circle">CA</div>
         <div class="hero-text">
-            <h1>Mudança para o Canadá</h1>
-            <p class="muted">Plano 2030 — grupo de 5 pessoas</p>
+            <h1>Plano Canadá 2030</h1>
+            <p class="muted">Painel de Controle</p>
         </div>
     </header>
 
     <main class="home-main container">
+
+        <div class="dash-grid">
+            <div class="dash-card">
+                <span class="dash-number" id="daysCount">...</span>
+                <span class="dash-label">Para 2030</span>
+            </div>
+            <div class="dash-card">
+                <span class="dash-number">5</span>
+                <span class="dash-label">Membros</span>
+            </div>
+            <div class="dash-card" onclick="window.location.href='crs.html'"
+                style="cursor:pointer; border-color:var(--accent-2)">
+                <span class="dash-number">Simular</span>
+                <span class="dash-label">CRS Score</span>
+            </div>
+        </div>
+
         <div class="menu-panel card elevated">
             <div class="menu-row">
-                <div class="nav-item center">
-                    <button class="nav-btn large" data-dd="docs">Documentação ▾</button>
+                <div class="nav-item">
+                    <button class="nav-btn large" data-dd="docs">📋 Documentação ▾</button>
                     <div class="dropdown" id="dd-docs">
-                        <a href="documentos.html">Passaporte</a>
-                        <a href="documentos.html">Antecedentes</a>
-                        <a href="documentos.html">Work Permit</a>
+                        <a href="documentos.html">Checklist & Docs</a>
+                        <a href="crs.html">Calculadora de Pontos</a>
                     </div>
                 </div>
 
-                <div class="nav-item center">
-                    <button class="nav-btn large" data-dd="moradia">Moradia ▾</button>
+                <div class="nav-item">
+                    <button class="nav-btn large" data-dd="moradia">🏠 Moradia ▾</button>
                     <div class="dropdown" id="dd-moradia">
-                        <a href="moradia.html">Região de Toronto</a>
-                        <a href="moradia.html">Região de Vancouver</a>
-                        <a href="moradia.html">Sites de aluguel</a>
+                        <a href="moradia.html">Regiões</a>
+                        <a href="moradia.html#sites">Sites de Busca</a>
                     </div>
                 </div>
 
-                <div class="nav-item center">
-                    <button class="nav-btn large" data-dd="ti">TI & Salários ▾</button>
+                <div class="nav-item">
+                    <button class="nav-btn large" data-dd="ti">💻 TI & Grana ▾</button>
                     <div class="dropdown" id="dd-ti">
-                        <a href="Ti&salario.html">Salários</a>
-                        <a href="Ti&salario.html">Simulação financeira</a>
+                        <a href="Ti&salario.html">Salários TI</a>
+                        <a href="Ti&salario.html#simulacao">Conversão BRL</a>
                     </div>
                 </div>
             </div>
 
             <div class="home-actions">
-                <button class="btn" id="openVisual">Alternar visual</button>
-                <a class="btn ghost" href="documentos.html">Ir para Documentação</a>
-                <a class="btn" href="colaboradores.html">Adicionar metas (amigos)</a>
-                <a class="btn ghost" href="timeline.html">Linha do tempo</a>
+                <a class="btn" href="timeline.html">Linha do Tempo (Metas)</a>
+                <a class="btn ghost" href="colaboradores.html">Mensagens Grupo</a>
             </div>
         </div>
     </main>
-
-    <!-- Modal visual -->
-    <div id="modalVisual" class="modal" aria-hidden="true">
-        <div class="modal-card elevated">
-            <button class="modal-close" id="closeVisual" aria-label="Fechar">&times;</button>
-            <h2>Resumo visual — Mudança para o Canadá</h2>
-            <div class="map-grid" id="mapGrid">
-                <!-- preenchido por webe.js -->
-            </div>
-            <div class="modal-footer">
-                <a href="documentos.html" class="btn">Ir para documentação</a>
-                <button class="btn ghost" id="closeVisual2">Fechar</button>
-            </div>
-        </div>
-    </div>
-
     <script src="wewe.js"></script>
 </body>
 

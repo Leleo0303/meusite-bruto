@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulador CRS — Canadá</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="logo-circle small">CA</div>
+        <nav class="mini-nav"><a href="index.html" class="link">Voltar</a></nav>
+    </header>
+
+    <main class="content card elevated">
+        <h1>Simulador CRS (Express Entry)</h1>
+        <p class="muted">Descubra sua pontuação aproximada para imigração.</p>
+
+        <form id="crsForm" style="display:grid; gap:15px; margin-top:20px;">
+
+            <div>
+                <label>Sua Idade</label>
+                <input type="number" id="c-age" value="25" min="18" max="50" class="select-box">
+            </div>
+
+            <div>
+                <label>Nível de Inglês (IELTS)</label>
+                <select id="c-eng" class="select-box">
+                    <option value="low">Básico/Intermediário (CLB 5-6)</option>
+                    <option value="mid">Avançado (CLB 7-8)</option>
+                    <option value="high" selected>Fluente/Superior (CLB 9+)</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Escolaridade</label>
+                <select id="c-edu" class="select-box">
+                    <option value="school">Ensino Médio</option>
+                    <option value="college">Tecnólogo (2-3 anos)</option>
+                    <option value="bachelor" selected>Bacharelado (Graduação)</option>
+                    <option value="master">Mestrado/Pós</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Anos de Experiência (Trabalho Qualificado)</label>
+                <select id="c-exp" class="select-box">
+                    <option value="0">Menos de 1 ano</option>
+                    <option value="1">1 a 2 anos</option>
+                    <option value="3" selected>3 anos ou mais</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn large" style="margin-top:10px">Calcular Pontos</button>
+        </form>
+
+        <div id="crsResult"
+            style="margin-top:25px; text-align:center; padding:20px; border-radius:12px; background:rgba(0,0,0,0.2);">
+            <p class="muted">Preencha e clique em calcular.</p>
+        </div>
+
+    </main>
+    <script src="wewe.js"></script>
+</body>
+
+</html>

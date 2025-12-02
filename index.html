@@ -4,59 +4,34 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Mudança para o Canadá — Loading</title>
+    <title>Mudança para o Canadá</title>
     <link rel="stylesheet" href="ee.css">
 </head>
 
 <body class="page-loading">
-    <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite">
+    <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-card">
-            <!-- Coloque seu ícone em assets/brand-icon.png -->
             <div class="logo-wrap">
-                <img id="brandIcon" src="icon/iconCAD.jpg" alt="CA" onerror="this.style.display='none'">
+                <img src="icon/iconCAD.jpg" alt="CA" onerror="this.style.display='none';this.parentNode.innerText='CA'">
             </div>
-            <h1 class="loading-title">Mudança para o Canadá</h1>
-            <p class="loading-sub">Plano 2030 — preparando seu roteiro</p>
+            <h1 class="loading-title">Plano Canadá 2030</h1>
 
-            <div class="loader-ring" aria-hidden="true">
-                <svg viewBox="0 0 50 50" class="ring" role="img">
+            <p id="loadingTip" class="loading-sub" style="font-style:italic; max-width:300px">
+                Preparando roteiro...
+            </p>
+
+            <div class="loader-ring">
+                <svg viewBox="0 0 50 50" class="ring">
                     <circle cx="25" cy="25" r="20" />
                 </svg>
-                <div class="loader-text">Carregando...</div>
             </div>
-
         </div>
     </div>
-    </div>
-
     <script>
-        // Ajustes de duração: overlay fica mais tempo (visível por ~2.8s)
-        const enter = document.getElementById('enterBtn');
-        const skip = document.getElementById('skipBtn');
-
-        // Tempo antes de redirecionar automaticamente para index (em ms)
-        // Aumentei para 3000ms (3s) para você ver o loading mais tempo
-        let redirect = setTimeout(() => window.location.href = 'teladrop.html', 3000);
-
-        enter && enter.addEventListener('click', () => { clearTimeout(redirect); window.location.href = 'index.html'; });
-        skip && skip.addEventListener('click', () => { clearTimeout(redirect); window.location.href = 'index.html'; });
-
-        // Caso abra o loading.html diretamente, animamos a saída do overlay.
-        // Mantemos o overlay visível um pouco mais: timeout interno 2200ms para sumir.
-        window.addEventListener('load', () => {
-            const overlay = document.getElementById('loadingOverlay');
-            if (!overlay) return;
-            // espera 2200ms antes de iniciar a animação de saída
-            setTimeout(() => {
-                overlay.style.transition = 'opacity .45s ease, transform .45s ease';
-                overlay.style.opacity = '0';
-                overlay.style.transform = 'scale(.98)';
-                // depois de 450ms, escondemos pra não bloquear clique
-                setTimeout(() => overlay.style.display = 'none', 450);
-            }, 2200);
-        });
+        // Redirecionamento automático
+        setTimeout(() => window.location.href = 'index.html', 3500);
     </script>
-
+    <script src="wewe.js"></script>
 </body>
 
 </html>

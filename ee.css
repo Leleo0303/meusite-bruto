@@ -175,3 +175,34 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); bo
 .muted { color: var(--muted); font-size: 0.9em; margin: 0; }
 .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 .image-grid img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
+
+/* === Adicionar ao final do ee.css === */
+
+/* Checkboxes Customizados */
+.chk-wrapper {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;
+    cursor: pointer; transition: background 0.2s;
+}
+.chk-wrapper:hover { background: rgba(255,255,255,0.08); }
+.chk-doc {
+    width: 20px; height: 20px; accent-color: var(--accent-2); cursor: pointer;
+}
+.chk-label { flex: 1; cursor: pointer; }
+
+/* Dashboard Index */
+.dash-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px; width: 100%; margin-bottom: 20px;
+}
+.dash-card {
+    background: linear-gradient(180deg, rgba(11,102,195,0.1), rgba(0,160,160,0.05));
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px; border-radius: 12px; text-align: center;
+}
+.dash-number { font-size: 24px; font-weight: 800; color: var(--text); display: block; }
+.dash-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Range Input para Calculadora */
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.select-box { width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid #444; }
