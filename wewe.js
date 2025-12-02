@@ -1,5 +1,5 @@
 // ==========================================
-// 1. CONFIGURAÇÃO E DADOS
+// 1. CONFIGURAÇÃO E DADOS GERAIS
 // ==========================================
 const CONFIG = {
     JSONBIN_ID: '692bd93843b1c97be9cdec79', // Seu ID
@@ -16,7 +16,7 @@ const DICAS_CANADA = [
 ];
 
 // ==========================================
-// 2. LÓGICA GERAL & UTILITÁRIOS
+// 2. LÓGICA GERAL & UTILITÁRIOS (Backend)
 // ==========================================
 const projectUtils = {
     // --- BANCO DE DADOS (JSONBin) ---
@@ -71,22 +71,23 @@ const projectUtils = {
         else if (education === 'college') score += 98;
         else score += 30;
 
-        // Inglês (CLB aproximado)
-        if (english === 'high') score += 136; // CLB 9+
+        // Inglês
+        if (english === 'high') score += 136;
         else if (english === 'mid') score += 80;
         else score += 0;
 
         // Experiência
-        if (exp >= 3) score += 50; // Simplificado (Skill Transferability)
+        if (exp >= 3) score += 50;
         else if (exp >= 1) score += 25;
 
-        // Bônus Educação + Inglês forte
+        // Bônus
         if (education !== 'school' && english === 'high') score += 50;
 
         return score;
     }
 };
 window.projectUtils = projectUtils;
+
 
 // ==========================================
 // 3. EVENTOS DA DOM (INTERFACE)
@@ -123,14 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkBoxes = document.querySelectorAll('.chk-doc');
     if (checkBoxes.length) {
         const saved = projectUtils.getChecks();
-        // Restaura estado
         checkBoxes.forEach(chk => {
             if (saved[chk.dataset.id]) chk.checked = true;
             chk.addEventListener('change', () => projectUtils.toggleCheck(chk.dataset.id));
         });
     }
 
-    // E. CRS CALCULATOR FORM (Nova Página)
+    // E. CRS CALCULATOR FORM
     const crsForm = document.getElementById('crsForm');
     if (crsForm) {
         crsForm.addEventListener('submit', (e) => {
@@ -145,12 +145,70 @@ document.addEventListener('DOMContentLoaded', () => {
             const resBox = document.getElementById('crsResult');
             resBox.innerHTML = `
                 <h2 style="color:var(--accent-2); margin-bottom:5px">${result} Pontos</h2>
-                <small class="muted">Estimativa não oficial. O corte médio é ~480-500.</small>
+                <small class="muted">Estimativa. Corte médio ~480-500.</small>
                 <div style="margin-top:10px; width:100%; background:#333; height:10px; border-radius:5px; overflow:hidden">
                     <div style="width:${(result / 600) * 100}%; background:var(--accent); height:100%"></div>
                 </div>
             `;
-            resBox.classList.add('elevated'); // Animação
+            resBox.classList.add('elevated');
         });
     }
+
+    // F. GRÁFICO DE SALÁRIOS (RESTAURADO)
+    const canvas = document.getElementById('salaryChart');
+    if (canvas) {
+        const parent = canvas.parentElement;
+        // Limpa o canvas original e aplica o estilo flex
+        parent.innerHTML = '';
+        parent.classList.add('chart-wrap');
+
+        const salarios = [
+            { label: 'Python', val: 100 },
+            { label: 'JS/React', val: 90 },
+            { label: 'Java', val: 105 },
+            { label: 'DevOps', val: 120 },
+            { label: 'Engenharia', val: 95 }
+        ];
+
+        const max = Math.max(...salarios.map(s => s.val));
+
+        salarios.forEach(item => {
+            const height = (item.val / max) * 100;
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+            bar.style.height = '0%'; // Começa zerado para animar
+
+            bar.innerHTML = `
+                <span class="chart-value">${item.val}k</span>
+                <span class="chart-label">${item.label}</span>
+            `;
+            parent.appendChild(bar);
+
+            // Animação simples
+            setTimeout(() => { bar.style.height = `${height}%`; }, 100);
+        });
+    }
+
+    // G. CONVERSOR FINANCEIRO (RESTAURADO)
+    const convertBtn = document.getElementById('convertBtn');
+    if (convertBtn) {
+        convertBtn.addEventListener('click', () => {
+            const rateInput = document.getElementById('rate');
+            const rate = parseFloat(rateInput.value) || 0;
+
+            // Exemplo base: Salário mensal de $5.000 CAD
+            const salarioExemplo = 5000;
+            const convertido = (salarioExemplo * rate).toFixed(2);
+
+            const resDiv = document.getElementById('simResult');
+            resDiv.innerHTML = `
+                <strong style="color:white; font-size:16px">
+                    CAD $5,000 = R$ ${convertido}
+                </strong>
+                <br><span style="font-size:12px">Isso é um salário mensal médio limpo.</span>
+            `;
+            resDiv.style.color = '#fff';
+        });
+    }
+
 });
