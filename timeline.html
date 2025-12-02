@@ -1,21 +1,60 @@
-<script src="wewe.js"></script>
-<script>
-    const form = document.getElementById('tlForm');
-    const list = document.getElementById('timelineList');
+<!doctype html>
+<html lang="pt-BR">
 
-    async function renderTimeline() {
-        list.innerHTML = '<p class="muted">Carregando...</p>';
-        const items = await projectUtils.getTimeline();
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Linha do Tempo — 2026–2030</title>
+    <link rel="stylesheet" href="ee.css">
+</head>
 
-        // Ordenar por ano
-        items.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+<body>
+    <header class="topbar">
+        <div class="logo-circle small">CA</div>
+        <nav class="mini-nav"><a href="index.html" class="link">Home</a></nav>
+    </header>
+    <main class="content card elevated">
+        <h1>Linha do Tempo — 2026 a 2030</h1>
+        <p class="muted">Adicione marcos por ano. Salvamos no navegador.</p>
+        <form id="tlForm" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input id="amigo" placeholder="Seu Nome" required
+                style="flex-basis:120px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
 
-        if (!items.length) {
-            list.innerHTML = '<p class="muted">Nenhuma meta. Adicione uma!</p>';
-            return;
-        }
+            <select id="year" required>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+                <option>2030</option>
+            </select>
 
-        list.innerHTML = items.map((i, idx) => `
+            <input id="title" placeholder="Título do marco" required
+                style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06)">
+
+            <button class="btn" type="submit">Adicionar</button>
+        </form>
+
+        <div id="timelineList" style="margin-top:12px"></div>
+    </main>
+
+    <script src="wewe.js"></script>
+    <script>
+        const form = document.getElementById('tlForm');
+        const list = document.getElementById('timelineList');
+
+        async function renderTimeline() {
+            list.innerHTML = '<p class="muted">Carregando...</p>';
+            const items = await projectUtils.getTimeline();
+
+            // Ordenar por ano
+            items.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+
+            if (!items.length) {
+                list.innerHTML = '<p class="muted">Nenhuma meta. Adicione uma!</p>';
+                return;
+            }
+
+            list.innerHTML = items.map((i, idx) => `
                 <div class="timeline-item">
                     <div class="timeline-meta">
                         <strong>${i.year} - ${i.title}</strong>
@@ -26,36 +65,36 @@
                     </div>
                 </div>
             `).join('');
-    }
+        }
 
-    renderTimeline();
-
-    form.addEventListener('submit', async e => {
-        e.preventDefault();
-        const year = document.getElementById('year').value;
-        const title = document.getElementById('title').value;
-        const amigo = document.getElementById('amigo').value;
-
-        const btn = form.querySelector('button');
-        btn.innerText = 'Salvando...';
-
-        await projectUtils.saveTimelineItem({ year, title, amigo, date: new Date().toLocaleString() });
-
-        btn.innerText = 'Adicionar';
-        form.reset();
         renderTimeline();
-    });
 
-    // Função global para o botão delete funcionar
-    window.deleteItem = async (index) => {
-        if (!confirm('Excluir?')) return;
-        const items = await projectUtils.getTimeline();
-        items.splice(index, 1); // Remove pelo índice
-        list.innerHTML = '<p class="muted">Atualizando...</p>';
-        await projectUtils.updateFullTimeline(items);
-        renderTimeline();
-    }
-</script>
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const year = document.getElementById('year').value;
+            const title = document.getElementById('title').value;
+            const amigo = document.getElementById('amigo').value;
+
+            const btn = form.querySelector('button');
+            btn.innerText = 'Salvando...';
+
+            await projectUtils.saveTimelineItem({ year, title, amigo, date: new Date().toLocaleString() });
+
+            btn.innerText = 'Adicionar';
+            form.reset();
+            renderTimeline();
+        });
+
+        // Função global para o botão delete funcionar
+        window.deleteItem = async (index) => {
+            if (!confirm('Excluir?')) return;
+            const items = await projectUtils.getTimeline();
+            items.splice(index, 1); // Remove pelo índice
+            list.innerHTML = '<p class="muted">Atualizando...</p>';
+            await projectUtils.updateFullTimeline(items);
+            renderTimeline();
+        }
+    </script>
 </body>
 
 </html>
