@@ -4,6 +4,10 @@
     --accent-2: #00a0a0;
     --text: #e6f0ff;
     --muted: #9fb4d6;
+    --card-bg: rgba(7, 26, 43, 0.65);
+    --card-contrast: rgba(15, 36, 51, 0.85);
+    --maxw: 1100px;
+    --tap-target: 14px;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -13,103 +17,115 @@ html, body {
     height: 100%; 
     margin: 0; 
     padding: 0;
-    overflow: hidden; /* Impede rolagem na tela de loading */
 }
 
-/* === CONFIGURAÇÃO DO FUNDO (A MÁGICA ESTÁ AQUI) === */
-body.page-loading {
-    /* Coloque aqui o caminho da sua foto (ex: icon/montagem.jpg) */
-    background-image: url('icon/iconCAD.jpg'); 
-    
+/* =========================================
+   1. FUNDO GERAL (Para todas as páginas, menos loading)
+   ========================================= */
+body {
+    /* Imagem padrão do site (ex: Casa Ontario) */
+    background-image: url('icon/Casaontario.jpg'); 
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: cover; /* Faz a imagem cobrir a tela toda sem esticar errado */
+    background-size: cover;
     background-attachment: fixed;
-    position: relative;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
 }
 
-/* === A MÁSCARA ESCURA (OVERLAY) === */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* Escurece a foto em 85% */
-    backdrop-filter: blur(5px); /* Desfoca a foto de fundo */
-    z-index: 9999; /* Garante que fique POR CIMA da foto */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px; /* Garante margem em celulares */
-}
-
-/* === O CÍRCULO GIRATÓRIO (SPINNER) === */
-.big-spinner {
-    width: 70px;
-    height: 70px;
-    border: 5px solid rgba(255, 255, 255, 0.1);
-    border-left-color: var(--accent-2); /* Cor Ciano */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 25px;
-}
-
-@keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* Texto Responsivo */
-.loading-title-big {
-    font-size: 24px; /* Tamanho bom para celular */
-    color: white;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-}
-
-.loading-sub-big {
-    font-size: 14px;
-    color: var(--muted);
-    font-style: italic;
-    max-width: 90%; /* Não deixa o texto vazar no celular */
-}
-
-/* Ajuste para telas maiores (PC) */
-@media (min-width: 768px) {
-    .loading-title-big { font-size: 32px; }
-    .big-spinner { width: 90px; height: 90px; }
-}
-
-/* Camada escura por cima da imagem para o texto aparecer */
+/* Máscara escura para o texto ficar legível nas páginas comuns */
 body::before {
     content: '';
     position: fixed;
     inset: 0;
     background: linear-gradient(180deg, rgba(2, 4, 5, 0.85) 0%, rgba(7, 20, 40, 0.92) 100%);
     z-index: -1;
-    backdrop-filter: blur(3px); /* Leve desfoque na imagem de fundo */
+    backdrop-filter: blur(3px);
 }
 
+/* =========================================
+   2. FUNDO ESPECÍFICO DO LOADING (Mounties)
+   ========================================= */
+body.page-loading {
+    /* COLOQUE AQUI O NOME DA FOTO DOS POLICIAIS QUE VOCÊ MANDOU */
+    background-image: url('icon/iconCAD.jpg'); 
+    /* Remove a máscara padrão para usarmos a específica do loading */
+}
+
+body.page-loading::before { display: none; } 
+
+/* Overlay do Loading (A máscara escura somente para o loading) */
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Escurece a foto */
+    backdrop-filter: blur(5px); /* Borra a foto */
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* O Círculo Giratório Grande */
+/* =========================================
+   NOVO LOADER ANIMADO (Anel Duplo)
+   ========================================= */
+.big-spinner {
+    width: 80px; 
+    height: 80px;
+    border-radius: 50%;
+    /* Borda transparente para criar o espaço */
+    border: 4px solid transparent;
+    /* Cores visíveis apenas em cima e embaixo para ver o giro */
+    border-top-color: var(--accent-2); /* Ciano */
+    border-bottom-color: var(--accent); /* Azul */
+    /* Sombra Neon */
+    box-shadow: 0 0 25px rgba(0, 160, 160, 0.6);
+    /* Animação: Gira uma volta completa em 1.2 segundos */
+    animation: spin 1.2s linear infinite;
+    margin-bottom: 30px;
+    position: relative; /* Necessário para o anel interno */
+}
+
+/* Segundo anel (interno) girando ao contrário */
+.big-spinner::before {
+    content: "";
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    border-top-color: #ffffff; /* Branco */
+    /* Animação: Gira ao contrário e mais rápido */
+    animation: spin-reverse 0.8s linear infinite;
+}
+
+/* Animação Horária */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animação Anti-Horária */
+@keyframes spin-reverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+/* Textos do Loading */
+.loading-title-big { font-size: 24px; color: white; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+.loading-sub-big { font-size: 14px; color: var(--muted); font-style: italic; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+
+/* =========================================
+   3. ESTILOS DAS PÁGINAS (Moradia, Index, Docs)
+   ========================================= */
 h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 
-/* === Loading Overlay === */
-.page-loading .loading-overlay {
-    position: fixed; inset: 0; display: grid; place-items: center;
-    background: #020405; z-index: 9999;
-}
-.page-loading .loading-card {
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
-    color: var(--text); text-align: center;
-}
-.loader-ring { display: flex; flex-direction: column; align-items: center; margin-top: 8px; }
-.ring { width: 64px; height: 64px; display: block; }
-.ring circle {
-    fill: none; stroke: var(--accent); stroke-width: 4;
-    stroke-dasharray: 126; animation: spin 1.8s linear infinite;
-}
-@keyframes spin { 0% { stroke-dashoffset: 126; } 100% { stroke-dashoffset: 0; } }
-
-/* === Layout e Cartões (Glassmorphism) === */
+/* Cartões de Vidro (Glassmorphism) */
 .card { border-radius: 16px; padding: 24px; }
 .elevated {
     background: var(--card-bg);
@@ -123,7 +139,7 @@ h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 .container { max-width: var(--maxw); margin: 20px auto; padding: 12px; }
 .content { max-width: 980px; margin: 22px auto; padding: 24px; width: 95%; }
 
-/* === Topbar === */
+/* Topbar */
 .topbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -132,13 +148,12 @@ h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 .logo-circle {
     width: 50px; height: 50px; border-radius: 12px;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: grid; place-items: center; font-weight: 800; color: #fff;
-    font-size: 18px;
+    display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 18px;
 }
 .logo-circle.small { width: 40px; height: 40px; font-size: 14px; }
 .mini-nav { display: flex; gap: 15px; }
 
-/* === Menu Home === */
+/* Menu Home */
 .home-main { display: grid; place-items: center; min-height: 60vh; }
 .menu-panel { width: 100%; max-width: 900px; text-align: center; }
 .menu-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
@@ -154,7 +169,7 @@ h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 }
 .nav-btn.large:active { transform: scale(0.98); }
 
-/* Dropdown Menu */
+/* Dropdowns */
 .dropdown {
     position: absolute; top: calc(100% + 10px); left: 0; right: 0;
     background: #0e1e30; border-radius: 10px; padding: 8px;
@@ -164,10 +179,9 @@ h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 .dropdown.show { display: block; animation: fadeIn 0.2s ease; }
 .dropdown a { display: block; color: var(--text); padding: 12px; text-decoration: none; border-radius: 6px; }
 .dropdown a:hover { background: rgba(255, 255, 255, 0.05); }
-
 @keyframes fadeIn { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:translateY(0)} }
 
-/* === Botões Gerais === */
+/* Botões */
 .btn {
     background: var(--accent); color: white; padding: 12px 20px;
     border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
@@ -178,116 +192,41 @@ h1, h2, h3 { color: var(--text); margin: 0 0 .5rem; }
 .btn.ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); }
 .home-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-/* === Listas e Inputs === */
+/* Inputs e Gráficos */
 ul { padding-left: 20px; line-height: 1.6; }
 input, select, textarea {
     background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
     color: white; font-family: inherit; font-size: 14px;
 }
-input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+.image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+.image-grid img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; transition: transform .18s ease; }
+.image-grid img:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.45); }
 
-/* === Modal === */
-.modal {
-    position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.85); z-index: 1000;
-}
-.modal-card { width: 90%; max-width: 800px; background: #0b1622; padding: 25px; border-radius: 16px; position: relative; }
-.modal-close { position: absolute; right: 15px; top: 10px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-
-/* === Timeline e Colaboradores === */
-.timeline-item {
-    background: rgba(255, 255, 255, 0.03); padding: 15px; margin-bottom: 10px;
-    border-radius: 10px; border-left: 4px solid var(--accent);
-    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
-}
-.timeline-meta { flex: 1; }
-.timeline-actions { display: flex; flex-direction: column; gap: 5px; min-width: 70px; }
-.btn-small { padding: 6px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; color: white; }
-.btn-del { background: #cf3030; }
-.btn-edit { background: #2f6eb8; }
-
-/* === Gráfico === */
-.chart-wrap { height: 300px; width: 100%; position: relative; margin-top: 20px; border-left: 1px solid #555; border-bottom: 1px solid #555; display: flex; align-items: flex-end; justify-content: space-around; padding: 0 10px; box-sizing: border-box; }
-/* Barras geradas via JS */
-.chart-bar { width: 10%; background: var(--accent); border-radius: 4px 4px 0 0; position: relative; transition: height 1s ease; min-width: 20px; }
-.chart-bar:hover { background: var(--accent-2); }
-.chart-label { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; white-space: nowrap; width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis; }
-.chart-value { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: bold; }
-
-/* === Responsive Mobile === */
-@media (max-width: 600px) {
-    .nav-item { width: 100%; }
-    .timeline-item { flex-direction: column; }
-    .timeline-actions { flex-direction: row; width: 100%; justify-content: flex-end; margin-top: 8px; }
-    .topbar { flex-direction: column; gap: 10px; }
-    .chart-label { font-size: 9px; bottom: -40px; transform: translateX(-50%) rotate(-45deg); }
-    .chart-wrap { margin-bottom: 40px; }
-}
-
-/* Utilitários */
-.link { color: var(--accent-2); text-decoration: none; font-weight: bold; }
-.muted { color: var(--muted); font-size: 0.9em; margin: 0; }
-.image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-.image-grid img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
-
-/* === Adicionar ao final do ee.css === */
-
-/* Checkboxes Customizados */
-.chk-wrapper {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-    padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;
-    cursor: pointer; transition: background 0.2s;
-}
+/* Checkboxes Doc */
+.chk-wrapper { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; cursor: pointer; transition: background 0.2s; }
 .chk-wrapper:hover { background: rgba(255,255,255,0.08); }
-.chk-doc {
-    width: 20px; height: 20px; accent-color: var(--accent-2); cursor: pointer;
-}
-.chk-label { flex: 1; cursor: pointer; }
+.chk-doc { width: 20px; height: 20px; accent-color: var(--accent-2); cursor: pointer; }
 
 /* Dashboard Index */
-.dash-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px; width: 100%; margin-bottom: 20px;
-}
-.dash-card {
-    background: linear-gradient(180deg, rgba(11,102,195,0.1), rgba(0,160,160,0.05));
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 15px; border-radius: 12px; text-align: center;
-}
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; margin-bottom: 20px; }
+.dash-card { background: linear-gradient(180deg, rgba(11,102,195,0.1), rgba(0,160,160,0.05)); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; text-align: center; }
 .dash-number { font-size: 24px; font-weight: 800; color: var(--text); display: block; }
 .dash-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
-/* Range Input para Calculadora */
-input[type=range] { width: 100%; accent-color: var(--accent); }
+/* Gráfico Simples */
+.chart-wrap { height: 260px; margin-top: 12px; border-radius: 10px; padding: 8px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.02); display:flex; align-items:flex-end; justify-content:space-around; }
+.chart-bar { width: 10%; background: var(--accent); border-radius: 4px 4px 0 0; position: relative; transition: height 1s ease; }
+.chart-label { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; white-space: nowrap; }
+.chart-value { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: bold; }
 .select-box { width: 100%; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.4); color: white; border: 1px solid #444; }
 
-/* === Adicionar ao final do ee.css === */
-
-/* Estilo da Barra de Progresso */
-.progress-container {
-    width: 100%; /* Ocupa toda a largura do cartão */
-    height: 8px; /* Altura da barra */
-    background: rgba(255, 255, 255, 0.1); /* Fundo cinza escuro da barra */
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 25px; /* Espaço acima da barra */
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+/* Mobile */
+@media (max-width: 600px) {
+    .nav-item { width: 100%; }
+    .topbar { flex-direction: column; gap: 10px; }
+    .loading-title-big { font-size: 20px; }
+    .big-spinner { width: 60px; height: 60px; }
 }
-
-.progress-bar-fill {
-    height: 100%;
-    width: 0%; /* Começa em 0% */
-    /* Gradiente usando as cores do seu tema */
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    border-radius: 10px;
-    /* Transição suave para a animação não ficar travada */
-    transition: width 0.1s linear;
-}
-
-.progress-text {
-    margin-top: 10px;
-    font-size: 14px;
-    color: var(--muted);
-    font-weight: bold;
-    letter-spacing: 1px;
-}
+/* Utilitários */
+.link { color: var(--accent-2); text-decoration: none; font-weight: bold; }
+.muted { color: var(--muted); font-size: 0.9em; margin: 0; }
